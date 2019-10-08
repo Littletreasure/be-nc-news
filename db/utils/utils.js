@@ -16,7 +16,6 @@ exports.makeRefObj = list => {
 };
 
 exports.formatComments = (comments, articleRef) => {
-  console.log(comments);
   const newComments = [];
   comments.forEach(comment => {
     const newObj = { ...comment };
@@ -26,6 +25,5 @@ exports.formatComments = (comments, articleRef) => {
     delete newObj.belongs_to;
     newComments.push(newObj);
   });
-  console.log(newComments);
   return newComments;
 };

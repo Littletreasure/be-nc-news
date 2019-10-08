@@ -44,8 +44,7 @@ exports.seed = function(knex) {
       const newFormattedComments = formatDates(formattedComments);
       return knex("comments")
         .insert(newFormattedComments)
-        .returning("*")
-        .then(data => console.log(data));
+        .returning("*");
     });
 
   // .then(() => {
