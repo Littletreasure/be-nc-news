@@ -1,6 +1,8 @@
 process.env.NODE_ENV = "test";
 const chai = require("chai");
 const { expect } = require("chai");
+const chaiSorted = require("chai-sorted");
+chai.use(chaiSorted);
 const request = require("supertest");
 const app = require("../app");
 const connection = require("../db/connection");
@@ -16,7 +18,7 @@ describe("/api", () => {
         .then(({ body }) => {
           expect(body.topics).to.be.an("array");
           expect(body.topics[0]).to.be.an("object");
-          expect(body.topics[0]).to.have.keys("slug", "description");
+          expect(body.topics[0]).to.contain.keys("slug", "description");
         });
     });
   });
@@ -28,7 +30,11 @@ describe("/api", () => {
         .then(({ body }) => {
           expect(body.user).to.be.an("array");
           expect(body.user[0]).to.be.an("object");
-          expect(body.user[0]).to.have.keys("username", "avatar_url", "name");
+          expect(body.user[0]).to.contain.keys(
+            "username",
+            "avatar_url",
+            "name"
+          );
         });
     });
   });
@@ -39,7 +45,7 @@ describe("/api", () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.article).to.be.an("object");
-          expect(body.article).to.have.keys(
+          expect(body.article).to.contain.keys(
             "author",
             "title",
             "article_id",
@@ -81,12 +87,50 @@ describe("/api", () => {
           expect(comment.body).to.equal("Wow, what a fab article - genius!!!");
         });
     });
-    it("GET /:article_id/comments returns 200 and returns an array of comments for the given article id", () => {
+    it("GET /:article_id/comments returns 200 and returns an array of comments for the given article id, sorted by created_at descending as default", () => {
       return request(app)
-        .get("/api/articles/3/comments")
+        .get("/api/articles/1/comments")
         .expect(200)
         .then(({ body }) => {
           expect(body.comments).to.be.an("array");
+          expect(body.comments[0]).to.contain.keys(
+            "comment_id",
+            "author",
+            "votes",
+            "created_at",
+            "body"
+          );
+          expect(body.comments).to.be.sortedBy("created_at", {
+            descending: true
+          });
+        });
+    });
+    it("GET /:article_id/comments?sort_by returns 200 and sorts the results by requested column", () => {
+      return request(app)
+        .get("/api/articles/1/comments?sort_by=comment_id")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).to.be.sortedBy("comment_id", {
+            descending: true
+          });
+        });
+    });
+    it("GET /:article_id/comments?order returns 200 and sorts the results in requested order", () => {
+      return request(app)
+        .get("/api/articles/1/comments?order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).to.be.sortedBy("created_at", {
+            ascending: true
+          });
+        });
+    });
+    it("GET /:article_id/comments?sort_by&order returns 200 and returns the results in requested order and sorted by requested column", () => {
+      return request(app)
+        .get("/api/articles/1/comments?sort_by=author&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).to.be.sortedBy("author", { ascending: true });
         });
     });
   });

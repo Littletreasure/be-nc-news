@@ -40,8 +40,21 @@ const addCommentByArticleId = ({ article_id }, comment) => {
     });
 };
 
+const fetchCommentsByArticleId = ({ article_id }, query) => {
+  let sortBy = "created_at";
+  if (query.sort_by) sortBy = query.sort_by;
+  let commentOrder = "desc";
+  if (query.order === "asc") commentOrder = "asc";
+  return connection
+    .select("*")
+    .from("comments")
+    .where("article_id", article_id)
+    .orderBy(sortBy, commentOrder);
+};
+
 module.exports = {
   fetchArticlesById,
   updateArticleVoteCount,
-  addCommentByArticleId
+  addCommentByArticleId,
+  fetchCommentsByArticleId
 };
