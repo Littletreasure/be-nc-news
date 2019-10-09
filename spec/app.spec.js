@@ -51,5 +51,14 @@ describe("/api", () => {
           );
         });
     });
+    it("PATCH /:article_id returns 202 and accepts a vote count object and returns an article object wtih vote count updated", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ inc_votes: 5 })
+        .expect(202)
+        .then(({ body: { article } }) => {
+          expect(article.article.votes).to.equal(5);
+        });
+    });
   });
 });
