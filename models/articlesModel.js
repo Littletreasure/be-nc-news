@@ -22,4 +22,26 @@ const updateArticleVoteCount = (article_id, { inc_votes }) => {
   );
 };
 
-module.exports = { fetchArticlesById, updateArticleVoteCount };
+const addCommentByArticleId = ({ article_id }, comment) => {
+  return connection
+    .insert(
+      [
+        {
+          article_id: article_id,
+          author: comment.username,
+          body: comment.body
+        }
+      ],
+      ["*"]
+    )
+    .into("comments")
+    .then(comment => {
+      return comment[0];
+    });
+};
+
+module.exports = {
+  fetchArticlesById,
+  updateArticleVoteCount,
+  addCommentByArticleId
+};

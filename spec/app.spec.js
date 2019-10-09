@@ -61,4 +61,33 @@ describe("/api", () => {
         });
     });
   });
+  describe("/articles/:article_id/comments", () => {
+    it("POST /:article_id/comments returns 201 and returns the posted comment", () => {
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send({
+          username: "icellusedkars",
+          body: "Wow, what a fab article - genius!!!"
+        })
+        .expect(201)
+        .then(({ body: { comment } }) => {
+          expect(comment).to.contain.keys(
+            "comment_id",
+            "author",
+            "votes",
+            "created_at",
+            "body"
+          );
+          expect(comment.body).to.equal("Wow, what a fab article - genius!!!");
+        });
+    });
+    it("GET /:article_id/comments returns 200 and returns an array of comments for the given article id", () => {
+      return request(app)
+        .get("/api/articles/3/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).to.be.an("array");
+        });
+    });
+  });
 });
