@@ -4,9 +4,12 @@ const handleCustomErrors = (err, req, res, next) => {
 };
 
 const handlePsqlErrors = (err, req, res, next) => {
-  const psqlBadRequestCodes = ["22P02", "23503"];
-  if (psqlBadRequestCodes.includes(err.code))
+  const psqlBadRequestCodes1 = ["22P02"];
+  const psqlBadRequestCodes2 = ["23503"];
+  if (psqlBadRequestCodes1.includes(err.code))
     res.status(400).send({ msg: "Bad Request" });
+  else if (psqlBadRequestCodes2.includes(err.code))
+    res.status(404).send({ msg: "No article found for article_id" });
   else next(err);
 };
 

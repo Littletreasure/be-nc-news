@@ -23,5 +23,68 @@
         }
       ]
     }
+  },
+  "GET /api/users/:username": {
+    "description": "serves an array containing the requested user",
+    "queries": [],
+    "exampleResponse": {
+      "user": [
+        {
+          "username": "lurker",
+          "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          "name": "do_nothing"
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an article object for the requested article_id",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "body": "I find this existence challenging",
+        "votes": 100,
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "created_at": "2018-11-15T12:21:54.171Z",
+        "comment_count": "13"
+      }
+    }
+  },
+  "PATCH /api/articles/article_id": {
+    "description": "updates the vote count for the requested article_id by the amount in the body",
+    "bodyExample": { "inc_votes": 1 },
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "body": "I find this existence challenging",
+        "votes": 101,
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "created_at": "2018-11-15T12:21:54.171Z"
+      }
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds a comment to the requested article_id and returns the comment",
+    "bodyExample": {
+      "username": "lurker",
+      "body": "I've read better articles"
+    },
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 23,
+        "author": "lurker",
+        "article_id": 6,
+        "votes": 0,
+        "created_at": "2019-10-10T15:38:38.985Z",
+        "body": "I've read better articles"
+      }
+    }
   }
 }

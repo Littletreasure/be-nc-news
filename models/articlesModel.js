@@ -20,12 +20,8 @@ const fetchArticlesById = ({ article_id }) => {
 };
 
 const updateArticleVoteCount = ({ article_id }, { inc_votes }) => {
-  if (!inc_votes) {
-    return Promise.reject({
-      status: 400,
-      msg: "Bad Request"
-    });
-  }
+  if (!inc_votes) inc_votes = 0;
+
   return connection("articles")
     .where("article_id", article_id)
     .increment("votes", inc_votes)
@@ -73,10 +69,18 @@ const fetchCommentsByArticleId = ({ article_id }, query) => {
     .orderBy(sortBy, commentOrder)
     .then(comments => {
       if (!comments[0]) {
-        return Promise.reject({
-          status: 404,
-          msg: "No comments found!"
-        });
+        return connection
+          .select("*")
+          .from("articles")
+          .where("article_id", article_id)
+          .then(article => {
+            if (!article[0]) {
+              return Promise.reject({
+                status: 404,
+                msg: `No article found for article_id: ${article_id}!`
+              });
+            }
+          });
       }
       return comments;
     });

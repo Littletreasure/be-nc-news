@@ -4,7 +4,16 @@ const fetchUsersByUsername = ({ username }) => {
   return connection
     .select("*")
     .from("users")
-    .where("username", username);
+    .where("username", username)
+    .then(user => {
+      if (!user[0]) {
+        return Promise.reject({
+          status: 404,
+          msg: `User not found!`
+        });
+      }
+      return user;
+    });
 };
 
 module.exports = { fetchUsersByUsername };

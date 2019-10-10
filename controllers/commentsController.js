@@ -1,6 +1,7 @@
 const {
   updateCommentVoteCount,
-  removeCommentById
+  removeCommentById,
+  fetchCommentById
 } = require("../models/commentsModel");
 
 const patchCommentVoteCount = (req, res, next) => {
@@ -19,4 +20,12 @@ const deleteCommentById = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { patchCommentVoteCount, deleteCommentById };
+const getCommentById = (req, res, next) => {
+  fetchCommentById(req.params)
+    .then(comment => {
+      res.status(200).send({ comment });
+    })
+    .catch(next);
+};
+
+module.exports = { patchCommentVoteCount, deleteCommentById, getCommentById };
