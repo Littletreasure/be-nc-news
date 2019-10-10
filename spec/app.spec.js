@@ -213,4 +213,24 @@ describe("/api", () => {
         .expect(204);
     });
   });
+  describe("error handling", () => {
+    it("GET /incorrect_route returns 404 'Route not found!' when passed an incorrect route", () => {
+      return request(app)
+        .get("/api/fish")
+        .expect(404)
+        .then(response => {
+          expect(response.text).to.equal("Route not found!");
+        });
+    });
+    it("GET /9999 returns 404 'No article found for article_id: 9999!! when passed an incorrect article_id", () => {
+      return request(app)
+        .get("/api/articles/9999")
+        .expect(404)
+        .then(response => {
+          expect(response.body.msg).to.equal(
+            "No article found for article_id: 9999!"
+          );
+        });
+    });
+  });
 });

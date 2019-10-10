@@ -9,6 +9,12 @@ const fetchArticlesById = ({ article_id }) => {
     .leftJoin("comments", "articles.article_id", "comments.article_id")
     .where("articles.article_id", article_id)
     .then(article => {
+      if (!article[0]) {
+        return Promise.reject({
+          status: 404,
+          msg: `No article found for article_id: ${article_id}!`
+        });
+      }
       return article[0];
     });
 };
