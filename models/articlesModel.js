@@ -20,11 +20,24 @@ const fetchArticlesById = ({ article_id }) => {
 };
 
 const updateArticleVoteCount = ({ article_id }, { inc_votes }) => {
+  if (!inc_votes) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request"
+    });
+  }
   return connection("articles")
     .where("article_id", article_id)
     .increment("votes", inc_votes)
     .returning("*")
     .then(article => {
+      if (!article[0]) {
+        return Promise.reject({
+          status: 404,
+          msg: `No article found for article_id: ${article_id}!`
+        });
+      }
+
       return article[0];
     });
 };
@@ -52,11 +65,21 @@ const fetchCommentsByArticleId = ({ article_id }, query) => {
   if (query.sort_by) sortBy = query.sort_by;
   let commentOrder = "desc";
   if (query.order === "asc") commentOrder = "asc";
+
   return connection
     .select("*")
     .from("comments")
     .where("article_id", article_id)
-    .orderBy(sortBy, commentOrder);
+    .orderBy(sortBy, commentOrder)
+    .then(comments => {
+      if (!comments[0]) {
+        return Promise.reject({
+          status: 404,
+          msg: "No comments found!"
+        });
+      }
+      return comments;
+    });
 };
 
 const fetchArticles = query => {

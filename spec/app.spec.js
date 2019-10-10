@@ -222,9 +222,76 @@ describe("/api", () => {
           expect(response.text).to.equal("Route not found!");
         });
     });
-    it("GET /9999 returns 404 'No article found for article_id: 9999!! when passed an incorrect article_id", () => {
+    it("GET /articles/9999 returns 404 'No article found for article_id: 9999!! when passed an incorrect article_id", () => {
       return request(app)
         .get("/api/articles/9999")
+        .expect(404)
+        .then(response => {
+          expect(response.body.msg).to.equal(
+            "No article found for article_id: 9999!"
+          );
+        });
+    });
+    it("GET /articles/abc returns 400 'Bad Request' when passed an incorrect format", () => {
+      return request(app)
+        .get("/api/articles/abc")
+        .expect(400)
+        .then(response => {
+          expect(response.body.msg).to.equal("Bad Request");
+        });
+    });
+    it("PATCH /articles/9999 returns 404 'No article found for article_id: 9999! when passed an incorrect article_id", () => {
+      return request(app)
+        .patch("/api/articles/9999")
+        .send({ inc_votes: 5 })
+        .expect(404)
+        .then(response => {
+          expect(response.body.msg).to.equal(
+            "No article found for article_id: 9999!"
+          );
+        });
+    });
+    it("PATCH /articles/abc returns 400 'Bad Request' when passed an incorrect format", () => {
+      return request(app)
+        .patch("/api/articles/abc")
+        .send({ inc_votes: 5 })
+        .expect(400)
+        .then(response => {
+          expect(response.body.msg).to.equal("Bad Request");
+        });
+    });
+    it("PATCH /articles/:article_id if a inc_vote object is not passed, returns 400 'Bad Request", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send()
+        .expect(400)
+        .then(response => {
+          expect(response.body.msg).to.equal("Bad Request");
+        });
+    });
+    it("GET /articles/:article_id/comments returns 404 'No comments found! when no comments are found", () => {
+      return request(app)
+        .get("/api/articles/9999/comments")
+        .expect(404)
+        .then(response => {
+          expect(response.body.msg).to.equal("No comments found!");
+        });
+    });
+    it("GET /articles/abc/comments returns 400 'Bad Request when passed an incorrect format", () => {
+      return request(app)
+        .get("/api/articles/abc/comments")
+        .expect(400)
+        .then(response => {
+          expect(response.body.msg).to.equal("Bad Request");
+        });
+    });
+    it("POST /articles/9999/comments returns 404 'No article found for article_id: 9999! when article does not exist", () => {
+      return request(app)
+        .post("/api/articles/9999/comments")
+        .send({
+          username: "icellusedkars",
+          body: "Wow, what a fab article - genius!!!"
+        })
         .expect(404)
         .then(response => {
           expect(response.body.msg).to.equal(
