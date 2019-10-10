@@ -39,7 +39,7 @@ describe("/api", () => {
     });
   });
   describe("/articles/:article_id", () => {
-    it("GET /:article_id returns 200 and an article object", () => {
+    it("GET /:article_id returns 200 and an article object with a comment count property", () => {
       return request(app)
         .get("/api/articles/3")
         .expect(200)
@@ -62,8 +62,8 @@ describe("/api", () => {
         .patch("/api/articles/3")
         .send({ inc_votes: 5 })
         .expect(202)
-        .then(({ body: { article } }) => {
-          expect(article.article.votes).to.equal(5);
+        .then(({ body }) => {
+          expect(body.article.votes).to.equal(5);
         });
     });
   });
@@ -132,6 +132,85 @@ describe("/api", () => {
         .then(({ body }) => {
           expect(body.comments).to.be.sortedBy("author", { ascending: true });
         });
+    });
+  });
+  describe("/articles", () => {
+    it("GET /  returns 200 and an array of article objects with a comment count - default sort order created_at in descending order", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).to.be.an("array");
+          expect(body.articles[0]).to.contain.keys(
+            "author",
+            "title",
+            "article_id",
+            "body",
+            "topic",
+            "created_at",
+            "votes",
+            "comment_count"
+          );
+          expect(body.articles).to.be.sortedBy("created_at", {
+            descending: true
+          });
+        });
+    });
+    it("GET /articles?sort_by returns 200 and an array of article objects sorted by requested column in default order", () => {
+      return request(app)
+        .get("/api/articles?sort_by=article_id")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).to.be.sortedBy("article_id", {
+            descending: true
+          });
+        });
+    });
+    it("GET /articles?order=asc returns 200 and an array of article objects sorted in ascending order - by default column", () => {
+      return request(app)
+        .get("/api/articles?order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).to.be.sortedBy("created_at", {
+            ascending: true
+          });
+        });
+    });
+    it("GET /articles?author returns 200 and an array of article objects filtered by requested author", () => {
+      return request(app)
+        .get("/api/articles?author=rogersop")
+        .expect(200)
+        .then(({ body }) => {
+          body.articles.forEach(article => {
+            expect(article.author).to.equal("rogersop");
+          });
+        });
+    });
+    it("GET /articles?topic returns 200 and an array of article objects filtered by requested topic", () => {
+      return request(app)
+        .get("/api/articles?topic=cats")
+        .expect(200)
+        .then(({ body }) => {
+          body.articles.forEach(article => {
+            expect(article.topic).to.equal("cats");
+          });
+        });
+    });
+  });
+  describe("/comments/:comment_id", () => {
+    it("PATCH /:comment_id returns 202 and accepts a vote count object and returns an comment object with vote count updated", () => {
+      return request(app)
+        .patch("/api/comments/13")
+        .send({ inc_votes: 3 })
+        .expect(202)
+        .then(({ body }) => {
+          expect(body.comment.votes).to.equal(3);
+        });
+    });
+    it("DELETE /:comment_id returns 204", () => {
+      return request(app)
+        .delete("/api/comments/13")
+        .expect(204);
     });
   });
 });
