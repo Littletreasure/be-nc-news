@@ -127,6 +127,33 @@ const fetchArticles = query => {
     .modify(sqlQuery => {
       if (query.author) sqlQuery.where("articles.author", query.author);
       if (query.topic) sqlQuery.where("articles.topic", query.topic);
+    })
+    .then(articles => {
+      if (!articles[0]) {
+        if (query.author) {
+          return connection("users")
+            .select("*")
+            .where("username", query.author)
+            .then(user => {
+              if (!user[0]) {
+                return Promise.reject({ status: 404, msg: "Author not found" });
+              }
+            });
+        } else if (query.topic) {
+          return connection("topics")
+            .select("*")
+            .where("slug", query.topic)
+            .then(topic => {
+              if (!topic[0]) {
+                return Promise.reject({
+                  status: 404,
+                  msg: "Topic not found"
+                });
+              }
+            });
+        }
+      }
+      return articles;
     });
 };
 

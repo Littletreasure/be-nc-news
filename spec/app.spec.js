@@ -400,5 +400,29 @@ describe("/api", () => {
           );
         });
     });
+    it("GET /api/articles?sort_by returns 400 'Invalid query' when query is invalid", () => {
+      return request(app)
+        .get("/api/articles?sort_by=fred")
+        .expect(400)
+        .then(response => {
+          expect(response.body.msg).to.equal("Invalid query");
+        });
+    });
+    it("GET /api/articles?author=fred returns 404 'Author not found", () => {
+      return request(app)
+        .get("/api/articles?author=fred")
+        .expect(404)
+        .then(response => {
+          expect(response.body.msg).to.equal("Author not found");
+        });
+    });
+    it("GET api/articles?topic=fred returns 404 'Topic not found", () => {
+      return request(app)
+        .get("/api/articles?topic=fred")
+        .expect(404)
+        .then(response => {
+          expect(response.body.msg).to.equal("Topic not found");
+        });
+    });
   });
 });
