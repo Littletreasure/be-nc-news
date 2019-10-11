@@ -28,13 +28,8 @@ describe("/api", () => {
         .get("/api/users/rogersop")
         .expect(200)
         .then(({ body }) => {
-          expect(body.user).to.be.an("array");
-          expect(body.user[0]).to.be.an("object");
-          expect(body.user[0]).to.contain.keys(
-            "username",
-            "avatar_url",
-            "name"
-          );
+          expect(body.user).to.be.an("object");
+          expect(body.user).to.contain.keys("username", "avatar_url", "name");
         });
     });
   });
@@ -57,11 +52,11 @@ describe("/api", () => {
           );
         });
     });
-    it("PATCH /:article_id returns 202 and accepts a vote count object and returns an article object wtih vote count updated", () => {
+    it("PATCH /:article_id returns 200 and accepts a vote count object and returns an article object wtih vote count updated", () => {
       return request(app)
         .patch("/api/articles/3")
         .send({ inc_votes: 5 })
-        .expect(202)
+        .expect(200)
         .then(({ body }) => {
           expect(body.article.votes).to.equal(5);
         });
@@ -202,7 +197,7 @@ describe("/api", () => {
       return request(app)
         .patch("/api/comments/13")
         .send({ inc_votes: 3 })
-        .expect(202)
+        .expect(200)
         .then(({ body }) => {
           expect(body.comment.votes).to.equal(3);
         });
@@ -228,7 +223,15 @@ describe("/api", () => {
         .get("/api/fish")
         .expect(404)
         .then(response => {
-          expect(response.text).to.equal("Route not found!");
+          expect(response.body.msg).to.equal("Route not found!");
+        });
+    });
+    it("PUT/ api/articles returns 405 'Method not allowed' when an incorrect method is used", () => {
+      return request(app)
+        .put("/api/articles")
+        .expect(405)
+        .then(response => {
+          expect(response.body.msg).to.equal("Method not allowed");
         });
     });
     it("GET /articles/9999 returns 404 'No article found for article_id: 9999!! when passed an incorrect article_id", () => {
@@ -277,7 +280,7 @@ describe("/api", () => {
           return request(app)
             .patch("/api/articles/3")
             .send()
-            .expect(202)
+            .expect(200)
             .then(({ body: { article } }) => {
               expect(article.votes).to.equal(votes);
             });
@@ -288,7 +291,7 @@ describe("/api", () => {
         .get("/api/articles/4/comments")
         .expect(200)
         .then(response => {
-          expect(response.body).to.eql({});
+          expect(response.body).to.be.an("object");
         });
     });
     it("GET /articles/9999/comments returns 404 ' No article found for article_id: 9999! when article does not exist", () => {
@@ -364,7 +367,7 @@ describe("/api", () => {
           return request(app)
             .patch("/api/comments/2")
             .send()
-            .expect(202)
+            .expect(200)
             .then(({ body: { comment } }) => {
               expect(comment.votes).to.equal(votes);
             });

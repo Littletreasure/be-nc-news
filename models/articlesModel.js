@@ -105,6 +105,7 @@ const fetchCommentsByArticleId = ({ article_id }, query) => {
                 msg: `No article found for article_id: ${article_id}!`
               });
             }
+            return [];
           });
       }
       return comments;
@@ -138,6 +139,7 @@ const fetchArticles = query => {
               if (!user[0]) {
                 return Promise.reject({ status: 404, msg: "Author not found" });
               }
+              return [];
             });
         } else if (query.topic) {
           return connection("topics")
@@ -150,6 +152,7 @@ const fetchArticles = query => {
                   msg: "Topic not found"
                 });
               }
+              return [];
             });
         }
       }

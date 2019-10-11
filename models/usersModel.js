@@ -12,7 +12,7 @@ const fetchUsersByUsername = ({ username }) => {
           msg: `User not found!`
         });
       }
-      return user;
+      return user[0];
     });
 };
 

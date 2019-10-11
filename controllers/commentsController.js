@@ -7,7 +7,7 @@ const {
 const patchCommentVoteCount = (req, res, next) => {
   updateCommentVoteCount(req.params, req.body)
     .then(comment => {
-      res.status(202).send({ comment });
+      res.status(200).send({ comment });
     })
     .catch(next);
 };

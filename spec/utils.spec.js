@@ -46,6 +46,27 @@ describe("formatDates", () => {
     expect(expected[0].created_at).to.be.an.instanceOf(Date);
     expect(expected[1].created_at).to.be.an.instanceOf(Date);
   });
+  it("does not mutate the original list", () => {
+    const array = [
+      {
+        title: "Eight pug gifs that remind me of mitch",
+        topic: "mitch",
+        author: "icellusedkars",
+        body: "some gifs",
+        created_at: 1289996514171
+      },
+      {
+        title: "Student SUES Mitch!",
+        topic: "mitch",
+        author: "rogersop",
+        body:
+          "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+        created_at: 1163852514171
+      }
+    ];
+    const expected = formatDates(array);
+    expect(expected).to.not.equal(array);
+  });
 });
 
 describe("makeRefObj", () => {
@@ -141,12 +162,18 @@ describe("formatComments", (obj, refObj) => {
       }
     ]);
   });
+  it("should not mutate the original array", () => {
+    const obj = [
+      {
+        body: "This is a bad article name",
+        belongs_to: "A",
+        created_by: "butter_bridge",
+        votes: 1,
+        created_at: 1038314163389
+      }
+    ];
+    const refObj = { A: 6 };
+    const actual = formatComments(obj, refObj);
+    expect(actual).to.not.equal(obj);
+  });
 });
-
-// {
-//   body: 'This is a bad article name',
-//     belongs_to: 'A',
-//       created_by: 'butter_bridge',
-//         votes: 1,
-//           created_at: 1038314163389,
-// }

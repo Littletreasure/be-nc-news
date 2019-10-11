@@ -25,16 +25,14 @@
     }
   },
   "GET /api/users/:username": {
-    "description": "returns an array containing the requested user",
+    "description": "returns an object containing the requested user",
     "queries": [],
     "exampleResponse": {
-      "user": [
-        {
-          "username": "lurker",
-          "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
-          "name": "do_nothing"
-        }
-      ]
+      "user": {
+        "username": "lurker",
+        "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        "name": "do_nothing"
+      }
     }
   },
   "GET /api/articles/:article_id": {

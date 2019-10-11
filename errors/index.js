@@ -4,7 +4,6 @@ const handleCustomErrors = (err, req, res, next) => {
 };
 
 const handlePsqlErrors = (err, req, res, next) => {
-  // console.log(err);
   const psqlBadRequestCodes1 = ["22P02", "23502"];
   const psqlBadRequestCodes2 = ["23503"];
   const psqlBadRequestCodes3 = ["42703"];
@@ -18,16 +17,20 @@ const handlePsqlErrors = (err, req, res, next) => {
 };
 
 const handleServerErrors = (err, req, res, next) => {
-  console.log(err);
   res.status(500).send({ msg: "Internal Server Error" });
 };
 
 const send405Error = (req, res, next) => {
-  res.status(405).send({ msg: "method not allowed" });
+  res.status(405).send({ msg: "Method not allowed" });
+};
+
+const send404Error = (req, res, next) => {
+  res.status(404).send({ msg: "Route not found!" });
 };
 module.exports = {
   handleCustomErrors,
   handlePsqlErrors,
   handleServerErrors,
-  send405Error
+  send405Error,
+  send404Error
 };
