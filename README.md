@@ -27,24 +27,26 @@ The connection object tells knex which database we are connecting to.
 
 We also need to point knex in the direction of our seed and migration files, so we could end up with something like this:
 
-const ENV = process.env.NODE_ENV || 'development';
+```js
+const ENV = process.env.NODE_ENV || "development";
 
 const baseConfig = {
-client: 'pg',
-migrations: {
-directory: './db/migrations',
-},
-seeds: {
-directory: './db/seeds',
-},
+  client: "pg",
+  migrations: {
+    directory: "./db/migrations"
+  },
+  seeds: {
+    directory: "./db/seeds"
+  }
 };
 
 const customConfigs = {
-development: { connection: { database: 'db_name' } },
-test: { connection: { database: 'db_name_test' } },
+  development: { connection: { database: "db_name" } },
+  test: { connection: { database: "db_name_test" } }
 };
 
 module.exports = { ...baseConfig, ...customConfigs[ENV] };
+```
 
 Note how critically we check the current NODE_ENV in order to export either the development or the test object. This ensures that is say process.env.NODE_ENV is “test” then we will be pointing to our test database.
 
