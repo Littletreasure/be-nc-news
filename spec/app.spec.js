@@ -321,6 +321,33 @@ describe("/api", () => {
           expect(response.body.msg).to.equal("No article found for article_id");
         });
     });
+    it("POST /articles/:article_id/comments returns 400 'No comment to post' when there is no comment to post", () => {
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send()
+        .expect(400)
+        .then(response => {
+          expect(response.body.msg).to.equal("No comment to post");
+        });
+    });
+    it("POST /articles/:article_id/comments returns 400 'username does not exist", () => {
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send({ username: "fred", body: "test" })
+        .expect(400)
+        .then(response => {
+          expect(response.body.msg).to.equal("Username does not exist");
+        });
+    });
+    it("POST /articles/:article_id/comments returns 400 'Bad Request' if object contains the incorrect keys", () => {
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send({ author: "lurker", body: "test" })
+        .expect(400)
+        .then(response => {
+          expect(response.body.msg).to.equal("Bad Request");
+        });
+    });
     it("GET /users/:username returns 404 'User not found!' if username does not exist", () => {
       return request(app)
         .get("/api/users/fred123")
@@ -343,7 +370,7 @@ describe("/api", () => {
             });
         });
     });
-    it("PATCH /comments/9999 returns 404 'No article found for comment_id: 9999! when passed an incorrect comment_id", () => {
+    it("PATCH /comments/9999 returns 404 'No comment found for comment_id: 9999!' when passed an incorrect comment_id", () => {
       return request(app)
         .patch("/api/comments/9999")
         .send({ inc_votes: 5 })
@@ -361,6 +388,16 @@ describe("/api", () => {
         .expect(400)
         .then(response => {
           expect(response.body.msg).to.equal("Bad Request");
+        });
+    });
+    it("DELETE /comments/9999 returns 404 No comment found for comment_id: 9999' when passed an incorrect comment_id", () => {
+      return request(app)
+        .delete("/api/comments/9999")
+        .expect(404)
+        .then(response => {
+          expect(response.body.msg).to.equal(
+            "No comment found for comment_id: 9999!"
+          );
         });
     });
   });

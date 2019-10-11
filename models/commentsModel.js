@@ -20,7 +20,17 @@ const updateCommentVoteCount = ({ comment_id }, { inc_votes }) => {
 const removeCommentById = ({ comment_id }) => {
   return connection("comments")
     .where("comment_id", comment_id)
-    .del();
+    .then(comment => {
+      if (!comment[0]) {
+        return Promise.reject({
+          status: 404,
+          msg: `No comment found for comment_id: ${comment_id}!`
+        });
+      }
+      return connection("comments")
+        .where("comment_id", comment_id)
+        .del();
+    });
 };
 
 const fetchCommentById = ({ comment_id }) => {

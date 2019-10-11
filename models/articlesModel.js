@@ -1,4 +1,5 @@
 const connection = require("../db/connection");
+const { fetchUsersByUsername } = require("./usersModel");
 
 const fetchArticlesById = ({ article_id }) => {
   return connection
@@ -39,20 +40,44 @@ const updateArticleVoteCount = ({ article_id }, { inc_votes }) => {
 };
 
 const addCommentByArticleId = ({ article_id }, comment) => {
-  return connection
-    .insert(
-      [
-        {
-          article_id: article_id,
-          author: comment.username,
-          body: comment.body
-        }
-      ],
-      ["*"]
-    )
-    .into("comments")
-    .then(comment => {
-      return comment[0];
+  if (Object.keys(comment).length === 0) {
+    return Promise.reject({
+      status: 400,
+      msg: "No comment to post"
+    });
+  }
+  if (Object.keys(comment).includes("username", "body") === false) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request"
+    });
+  }
+  return connection("users")
+    .select("*")
+    .where("username", comment.username)
+    .then(user => {
+      if (!user[0]) {
+        return Promise.reject({
+          status: 400,
+          msg: `Username does not exist`
+        });
+      }
+
+      return connection
+        .insert(
+          [
+            {
+              article_id: article_id,
+              author: comment.username,
+              body: comment.body
+            }
+          ],
+          ["*"]
+        )
+        .into("comments")
+        .then(comment => {
+          return comment[0];
+        });
     });
 };
 
