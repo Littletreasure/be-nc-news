@@ -86,12 +86,14 @@ const fetchCommentsByArticleId = ({ article_id }, query) => {
   if (query.sort_by) sortBy = query.sort_by;
   let commentOrder = "desc";
   if (query.order === "asc") commentOrder = "asc";
-
+  let limit = 10;
+  if (query.limit) limit = query.limit;
   return connection
     .select("*")
     .from("comments")
     .where("article_id", article_id)
     .orderBy(sortBy, commentOrder)
+    .limit(limit)
     .then(comments => {
       if (!comments[0]) {
         return connection
@@ -117,6 +119,8 @@ const fetchArticles = query => {
   if (query.sort_by) sortBy = query.sort_by;
   let articleOrder = "desc";
   if (query.order === "asc") articleOrder = "asc";
+  let limit = 10;
+  if (query.limit) limit = query.limit;
 
   return connection
     .select("articles.*")
@@ -125,6 +129,7 @@ const fetchArticles = query => {
     .count("comments.comment_id as comment_count")
     .leftJoin("comments", "articles.article_id", "comments.article_id")
     .orderBy(sortBy, articleOrder)
+    .limit(limit)
     .modify(sqlQuery => {
       if (query.author) sqlQuery.where("articles.author", query.author);
       if (query.topic) sqlQuery.where("articles.topic", query.topic);

@@ -51,3 +51,7 @@ module.exports = { ...baseConfig, ...customConfigs[ENV] };
 Note how critically we check the current NODE_ENV in order to export either the development or the test object. This ensures that is say process.env.NODE_ENV is “test” then we will be pointing to our test database.
 
 Any migration files we create will be written into ./db/migrations directory inside our project.
+
+# Endpoints
+
+To see all the available endpoints go to /api for a json file showing all endpoints and queries.

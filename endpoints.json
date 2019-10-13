@@ -9,9 +9,23 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "POST /api/topics": {
+    "description": "adds a topic object",
+    "bodyExample": {
+      "slug": "bananas",
+      "description": "weird yellow fruit"
+    },
+    "queries": [],
+    "exampleResponse": {
+      "topic": {
+        "slug": "bananas",
+        "description": "weird yellow fruit"
+      }
+    }
+  },
   "GET /api/articles": {
     "description": "returns an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["author", "topic", "sort_by", "order", "limit"],
     "exampleResponse": {
       "articles": [
         {
@@ -22,6 +36,50 @@
           "created_at": 1527695953341
         }
       ]
+    }
+  },
+  "Get /api/users": {
+    "description": "returns an array of username objects",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+          "name": "jonny"
+        },
+        {
+          "username": "icellusedkars",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+          "name": "sam"
+        },
+        {
+          "username": "rogersop",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+          "name": "paul"
+        },
+        {
+          "username": "lurker",
+          "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          "name": "do_nothing"
+        }
+      ]
+    }
+  },
+  "POST /api/users": {
+    "description": "returns a new user object",
+    "bodyExample": {
+      "username": "batman123",
+      "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      "name": "David"
+    },
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "batman123",
+        "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        "name": "David"
+      }
     }
   },
   "GET /api/users/:username": {
@@ -87,7 +145,7 @@
   },
   "GET /api/articles/:article_id/comments": {
     "description": "returns an array of comments for the given article_id",
-    "queries": ["sort_by", "order"],
+    "queries": ["sort_by", "order", "limit"],
     "exampleResponse": {
       "comments": [
         {

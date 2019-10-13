@@ -4,4 +4,13 @@ const fetchTopics = () => {
   return connection.select("*").from("topics");
 };
 
-module.exports = { fetchTopics };
+const addTopic = topic => {
+  return connection
+    .insert([{ slug: topic.slug, description: topic.description }], ["*"])
+    .into("topics")
+    .then(topic => {
+      return topic[0];
+    });
+};
+
+module.exports = { fetchTopics, addTopic };

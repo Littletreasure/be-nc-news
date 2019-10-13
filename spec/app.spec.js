@@ -10,15 +10,38 @@ const connection = require("../db/connection");
 describe("/api", () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
-  describe("/topics", () => {
-    it("GET / returns 200 and returns with an array of objects", () => {
+  describe("/users", () => {
+    it("GET / returns 200 and an array of user objects", () => {
       return request(app)
-        .get("/api/topics")
+        .get("/api/users")
         .expect(200)
         .then(({ body }) => {
-          expect(body.topics).to.be.an("array");
-          expect(body.topics[0]).to.be.an("object");
-          expect(body.topics[0]).to.contain.keys("slug", "description");
+          expect(body.users).to.be.an("array");
+          expect(body.users[0]).to.contain.keys(
+            "username",
+            "avatar_url",
+            "name"
+          );
+        });
+    });
+    it("POST / returns 201 and a new user object", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "batman123",
+          avatar_url:
+            "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          name: "dave"
+        })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.user).to.be.an("object");
+          expect(body.user).to.eql({
+            username: "batman123",
+            avatar_url:
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            name: "dave"
+          });
         });
     });
   });
@@ -82,7 +105,7 @@ describe("/api", () => {
           expect(comment.body).to.equal("Wow, what a fab article - genius!!!");
         });
     });
-    it("GET /:article_id/comments returns 200 and returns an array of comments for the given article id, sorted by created_at descending as default", () => {
+    it("GET /:article_id/comments returns 200 and returns an array of comments for the given article id, sorted by created_at descending as default, default limit of 10", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -98,6 +121,15 @@ describe("/api", () => {
           expect(body.comments).to.be.sortedBy("created_at", {
             descending: true
           });
+          expect(body.comments.length).to.equal(10);
+        });
+    });
+    it("GET /:article_id/comments/limit returns 200 and returns an array of comments for the given article id limited to requested number", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=5")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments.length).to.equal(5);
         });
     });
     it("GET /:article_id/comments?sort_by returns 200 and sorts the results by requested column", () => {
@@ -130,7 +162,7 @@ describe("/api", () => {
     });
   });
   describe("/articles", () => {
-    it("GET /  returns 200 and an array of article objects with a comment count - default sort order created_at in descending order", () => {
+    it("GET /  returns 200 and an array of article objects with a comment count - default sort order created_at in descending order, default limit of 10", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -149,6 +181,15 @@ describe("/api", () => {
           expect(body.articles).to.be.sortedBy("created_at", {
             descending: true
           });
+          expect(body.articles.length).to.equal(10);
+        });
+    });
+    it("GET /articles?limit returns 200 and an array of article objects limited to the requested number", () => {
+      return request(app)
+        .get("/api/articles?limit=5")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).to.equal(5);
         });
     });
     it("GET /articles?sort_by returns 200 and an array of article objects sorted by requested column in default order", () => {
@@ -206,6 +247,30 @@ describe("/api", () => {
       return request(app)
         .delete("/api/comments/13")
         .expect(204);
+    });
+  });
+  describe("/topics", () => {
+    it("GET / returns 200 and an array of topic objects", () => {
+      return request(app)
+        .get("/api/topics")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.topics).to.be.an("array");
+          expect(body.topics[0]).to.contain.keys("slug", "description");
+        });
+    });
+    it("POST / returns 201 and a new topic object", () => {
+      return request(app)
+        .post("/api/topics")
+        .send({ slug: "bananas", description: "weird yellow fruit" })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.topic).to.be.an("object");
+          expect(body.topic).to.eql({
+            slug: "bananas",
+            description: "weird yellow fruit"
+          });
+        });
     });
   });
   describe("/api", () => {

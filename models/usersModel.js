@@ -16,4 +16,31 @@ const fetchUsersByUsername = ({ username }) => {
     });
 };
 
-module.exports = { fetchUsersByUsername };
+const fetchUsers = () => {
+  return connection
+    .select("*")
+    .from("users")
+    .then(users => {
+      return users;
+    });
+};
+
+const addUser = user => {
+  return connection
+    .insert(
+      [
+        {
+          username: user.username,
+          avatar_url: user.avatar_url,
+          name: user.name
+        }
+      ],
+      ["*"]
+    )
+    .into("users")
+    .then(user => {
+      return user[0];
+    });
+};
+
+module.exports = { fetchUsersByUsername, fetchUsers, addUser };
