@@ -10,7 +10,7 @@ commentsRouter
   .route("/:comment_id")
   .patch(patchCommentVoteCount)
   .delete(deleteCommentById)
-  .get(getCommentById);
-commentsRouter.all("/", send405Error);
+  .get(getCommentById)
+  .all(send405Error);
 
 module.exports = commentsRouter;

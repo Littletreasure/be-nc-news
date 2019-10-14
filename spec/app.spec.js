@@ -492,5 +492,13 @@ describe("/api", () => {
           expect(response.body.msg).to.equal("Topic not found");
         });
     });
+    it("PUT api/comments/1 returns 405 'Method not allowed", () => {
+      return request(app)
+        .put("/api/comments/1")
+        .expect(405)
+        .then(response => {
+          expect(response.body.msg).to.equal("Method not allowed");
+        });
+    });
   });
 });

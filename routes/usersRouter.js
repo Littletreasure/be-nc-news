@@ -9,10 +9,12 @@ const { send405Error } = require("../errors/index");
 usersRouter
   .route("/")
   .get(getUsers)
-  .post(postUser);
-usersRouter.all("/", send405Error);
+  .post(postUser)
+  .all(send405Error);
 
-usersRouter.route("/:username").get(getUsersByUsername);
-usersRouter.all("/", send405Error);
+usersRouter
+  .route("/:username")
+  .get(getUsersByUsername)
+  .all(send405Error);
 
 module.exports = usersRouter;

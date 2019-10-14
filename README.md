@@ -11,14 +11,23 @@ These instructions will get you a copy of the project up and running on your loc
 
 Fork this repository to your own GitHub account. Clone your fork of this repository to your local machine and cd into it:
 
-$ git clone <your fork's URL>
-$ cd be_nc_news
+`$ git clone <your fork's URL>`
 
-Make sure you've navigated into the folder and install all dependencies using npm install. You also have access to an npm script to run tests (npm test). To setup the database type 'npm run setup-dbs' and to seed the database type 'npm run seed'.
+`$ cd be_nc_news`
+
+Make sure you've navigated into the folder and install all dependencies using npm install.
+
+You also have access to an npm script to run tests (npm test). These tests require mocha, chai, supertest and chai-sorted. These should have been installed when running npm install. To setup the database type 'npm run setup-dbs' and to seed the database type 'npm run seed'.
 
 You will also need node.js and postgres to run this project.
 
-The endpoints.json file shows all the available endpoints in this database.
+# Endpoints
+
+The endpoints.json file shows all the available endpoints in this database. This is accessed at /api.
+
+# Using Insomnia
+
+Another way to test the project is to use some software called Insomnia. This can be found here https://insomnia.rest. To run this project type npm start in your terminal. Open Insomnia and type localhost:9090/api - this will show the endpoints.json file as mentioned above.
 
 # Creating a knexfile.js
 
@@ -48,10 +57,6 @@ const customConfigs = {
 module.exports = { ...baseConfig, ...customConfigs[ENV] };
 ```
 
-Note how critically we check the current NODE_ENV in order to export either the development or the test object. This ensures that is say process.env.NODE_ENV is “test” then we will be pointing to our test database.
+Note how critically we check the current NODE_ENV in order to export either the development or the test object. This ensures that if it says process.env.NODE_ENV is “test” then we will be pointing to our test database.
 
 Any migration files we create will be written into ./db/migrations directory inside our project.
-
-# Endpoints
-
-To see all the available endpoints go to /api for a json file showing all endpoints and queries.
