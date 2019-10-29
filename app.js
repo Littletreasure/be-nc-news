@@ -1,6 +1,8 @@
 const express = require("express");
 const apiRouter = require("./routes/apiRouter");
 const { send404Error } = require("./errors/index");
+const cors = require("cors");
+app.use(cors());
 
 const app = express();
 app.use(express.json());
